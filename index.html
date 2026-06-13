@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commit Crimes — GitHub Forensics</title>
+  <meta name="description" content="Investigating suspicious GitHub activity since today. Enter a GitHub username and receive a devastating forensic analysis." />
+
+  <!-- Favicon inline SVG as data URI -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🔍%3C/text%3E%3C/svg%3E" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&amp;family=Bebas+Neue&amp;display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+
+  <!-- Animated background canvas -->
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- Theme toggle -->
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+    <span class="theme-icon">☀️</span>
+  </button>
+
+  <!-- ===================== HERO SECTION ===================== -->
+  <section class="hero" id="hero">
+    <div class="hero-inner">
+
+      <div class="hero-badge">⚠️ FORENSIC DIVISION · ACTIVE</div>
+
+      <h1 class="hero-title">
+        <span class="title-line-1">COMMIT</span>
+        <span class="title-line-2">CRIMES</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Investigating suspicious GitHub activity since today.<br />
+        <span class="hero-sub-small">No developer is innocent. Especially you.</span>
+      </p>
+
+      <!-- Search form -->
+      <div class="search-container">
+        <div class="search-box">
+          <span class="search-prefix">github.com /</span>
+          <input
+            type="text"
+            id="usernameInput"
+            class="search-input"
+            placeholder="your-username-here"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            maxlength="39"
+          />
+          <button class="analyze-btn" id="analyzeBtn">
+            <span class="btn-text">INVESTIGATE</span>
+            <span class="btn-icon">🔍</span>
+          </button>
+        </div>
+        <p class="search-disclaimer">Warning: Results may cause existential crisis and/or career reconsideration.</p>
+
+        <div class="example-users">
+          <span class="example-label">Try these suspects:</span>
+          <button class="example-chip" data-user="torvalds">torvalds</button>
+          <button class="example-chip" data-user="gaearon">gaearon</button>
+          <button class="example-chip" data-user="sindresorhus">sindresorhus</button>
+          <button class="example-chip" data-user="tj">tj</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint" id="scrollHint">↓ scroll to see crimes ↓</div>
+  </section>
+
+  <!-- ===================== LOADING STATE ===================== -->
+  <div class="loading-overlay" id="loadingOverlay" hidden>
+    <div class="loading-card">
+      <div class="loading-spinner"></div>
+      <p class="loading-title" id="loadingTitle">Gathering Evidence...</p>
+      <p class="loading-sub" id="loadingSub">Rummaging through your repos like a detective with commitment issues</p>
+      <div class="loading-steps">
+        <div class="load-step" id="ls1">📡 Pinging GitHub servers...</div>
+        <div class="load-step" id="ls2">🕵️ Profiling your activity...</div>
+        <div class="load-step" id="ls3">📊 Calculating how bad it really is...</div>
+        <div class="load-step" id="ls4">✍️ Writing your indictment...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ERROR STATE ===================== -->
+  <div class="error-overlay" id="errorOverlay" hidden>
+    <div class="error-card glass-card">
+      <div class="error-icon">🚨</div>
+      <h2 class="error-title">Crime Scene Not Found</h2>
+      <p class="error-message" id="errorMessage">That username doesn't exist — or they deleted their account after seeing our previous report. Cowards.</p>
+      <button class="retry-btn" id="retryBtn">Try Another Suspect</button>
+    </div>
+  </div>
+
+  <!-- ===================== RESULTS SECTION ===================== -->
+  <section class="results-section" id="resultsSection" hidden>
+    <div class="results-container">
+
+      <!-- ---- PROFILE CARD ---- -->
+      <div class="profile-row">
+        <div class="profile-card glass-card">
+          <div class="profile-verdict-badge">🔎 SUSPECT IDENTIFIED</div>
+          <div class="profile-avatar-wrap">
+            <img class="profile-avatar" id="profileAvatar" src="" alt="suspect avatar" />
+            <div class="avatar-glow"></div>
+          </div>
+          <div class="profile-info">
+            <h2 class="profile-name" id="profileName">—</h2>
+            <p class="profile-login" id="profileLogin">—</p>
+            <p class="profile-bio" id="profileBio">No bio. Suspicious.</p>
+            <div class="profile-tags" id="profileTags"></div>
+            <a class="profile-link" id="profileLink" href="#" target="_blank" rel="noopener">
+              View Crime Scene on GitHub ↗
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick stats -->
+        <div class="quick-stats-grid">
+          <div class="quick-stat glass-card">
+            <span class="qs-icon">📦</span>
+            <span class="qs-value" id="statRepos">0</span>
+            <span class="qs-label">Repos</span>
+          </div>
+          <div class="quick-stat glass-card">
+            <span class="qs-icon">⭐</span>
+            <span class="qs-value" id="statStars">0</span>
+            <span class="qs-label">Stars</span>
+          </div>
+          <div class="quick-stat glass-card">
+            <span class="qs-icon">👥</span>
+            <span class="qs-value" id="statFollowers">0</span>
+            <span class="qs-label">Followers</span>
+          </div>
+          <div class="quick-stat glass-card">
+            <span class="qs-icon">👀</span>
+            <span class="qs-value" id="statFollowing">0</span>
+            <span class="qs-label">Following</span>
+          </div>
+          <div class="quick-stat glass-card">
+            <span class="qs-icon">🎂</span>
+            <span class="qs-value" id="statAge">0</span>
+            <span class="qs-label">Years on GitHub</span>
+          </div>
+          <div class="quick-stat glass-card">
+            <span class="qs-icon">💻</span>
+            <span class="qs-value lang-val" id="statLang">?</span>
+            <span class="qs-label">Top Language</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- CRIME SCORE ---- -->
+      <div class="section-block">
+        <div class="section-eyebrow">FORENSIC SCORING</div>
+        <h2 class="section-title">The Crime Score™</h2>
+        <p class="section-desc">Our patented algorithm determined your guilt with absolutely scientific precision.</p>
+
+        <div class="crime-score-layout">
+          <div class="score-ring-wrap glass-card">
+            <svg class="score-ring" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <circle class="ring-bg" cx="100" cy="100" r="80" />
+              <circle class="ring-fill" id="ringFill" cx="100" cy="100" r="80" />
+            </svg>
+            <div class="score-center">
+              <span class="score-number" id="scoreNumber">0</span>
+              <span class="score-label">/ 100</span>
+              <span class="score-verdict" id="scoreVerdict">CALCULATING...</span>
+            </div>
+          </div>
+
+          <div class="score-bars">
+            <div class="score-bar-item">
+              <div class="sbi-header">
+                <span class="sbi-label">Activity</span>
+                <span class="sbi-val" id="barActivityVal">0</span>
+              </div>
+              <div class="sbi-track"><div class="sbi-fill" id="barActivity"></div></div>
+            </div>
+            <div class="score-bar-item">
+              <div class="sbi-header">
+                <span class="sbi-label">Documentation</span>
+                <span class="sbi-val" id="barDocsVal">0</span>
+              </div>
+              <div class="sbi-track"><div class="sbi-fill" id="barDocs"></div></div>
+            </div>
+            <div class="score-bar-item">
+              <div class="sbi-header">
+                <span class="sbi-label">Consistency</span>
+                <span class="sbi-val" id="barConsistVal">0</span>
+              </div>
+              <div class="sbi-track"><div class="sbi-fill" id="barConsist"></div></div>
+            </div>
+            <div class="score-bar-item">
+              <div class="sbi-header">
+                <span class="sbi-label">Popularity</span>
+                <span class="sbi-val" id="barPopVal">0</span>
+              </div>
+              <div class="sbi-track"><div class="sbi-fill" id="barPop"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- CRIME REPORT (ROASTS) ---- -->
+      <div class="section-block">
+        <div class="section-eyebrow">OFFICIAL INDICTMENT</div>
+        <h2 class="section-title">Crime Report</h2>
+        <p class="section-desc">These findings have been certified by a highly sarcastic algorithm with a law degree from StackOverflow University.</p>
+
+        <div class="roast-actions">
+          <button class="action-btn" id="randomRoastBtn">🎲 Random Roast</button>
+          <button class="action-btn" id="copyRoastBtn">📋 Copy Report</button>
+          <button class="action-btn" id="shareBtn">🔗 Share Evidence</button>
+        </div>
+
+        <div class="roast-list" id="roastList"></div>
+      </div>
+
+      <!-- ---- ACHIEVEMENT BADGES ---- -->
+      <div class="section-block">
+        <div class="section-eyebrow">COMMENDATIONS & CONVICTIONS</div>
+        <h2 class="section-title">Badges of (Dis)Honor</h2>
+        <p class="section-desc">Awards that look impressive until you read what they're actually for.</p>
+
+        <div class="badges-grid" id="badgesGrid"></div>
+      </div>
+
+      <!-- ---- REPO SHOWCASE ---- -->
+      <div class="section-block">
+        <div class="section-eyebrow">EXHIBIT A THROUGH Z</div>
+        <h2 class="section-title">The Evidence Vault</h2>
+        <p class="section-desc">A curated selection of your finest alleged works, sorted by how much the internet cared (not very much).</p>
+
+        <div class="repos-grid" id="reposGrid"></div>
+      </div>
+
+      <!-- ---- FOOTER ACTIONS ---- -->
+      <div class="results-footer">
+        <button class="new-search-btn" id="newSearchBtn">🔄 Investigate Another Suspect</button>
+        <button class="download-btn" id="downloadBtn">📸 Download Report</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== SITE FOOTER ===================== -->
+  <footer class="site-footer">
+    <p>Commit Crimes © <span id="footerYear"></span> · No developers were permanently harmed · Probably.</p>
+    <p class="footer-sub">Uses the public GitHub API. Not affiliated with GitHub or sanity.</p>
+  </footer>
+
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
