@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Commit Crimes 🕵️‍♂️🔥
 
-## Getting Started
+**Commit Crimes** is a forensic audit and profiling tool designed to investigate suspicious developer activity on GitHub. It scans public profiles and repositories, calculates a precise crime score, dynamically upgrades indictments using AI, awards personalized badges of (dis)honor, and generates official digital arrest warrants.
 
-First, run the development server:
+No developer is innocent. Especially you.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## What the Project Accomplishes
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project transforms dry GitHub statistics into a gamified, humorous forensic investigation report. It accomplishes this through the following core features:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🔎 Forensic Suspect Profiling
+- Scans any public GitHub suspect profile or repository by querying Git metrics in real-time.
+- Captures details including repository counts, total star metrics, follower-to-following ratios, account age, and scan-level chronological data.
 
-## Learn More
+### ⚡ Speed-of-Light Asynchronous Hydration (Dual Mode)
+- **Instant Initial Audit**: The application generates and loads a rules-based mock roast synchronously in under 1 second to ensure instant responsiveness.
+- **Asynchronous AI Upgrading**: A background worker connects to the Forensic AI engine to analyze code patterns, languages, and repo statistics. It then dynamically replaces the mock indictments with highly personalized, custom-tailored AI roasts while displaying a live pulsing status indicator.
 
-To learn more about Next.js, take a look at the following resources:
+### ⚖️ The Crime Score™ & Chronology
+- Calculates an indictment score with absolute scientific precision based on activity density, documentation levels, and repository hygiene.
+- Features a detailed **Crime Hours Analysis** chart tracking commit timestamps to identify peak desperation/productivity hours (e.g., peak code pushes at 3:00 AM).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🏆 Badges of (Dis)Honor (Dynamic & Self-Hosted)
+- Displays custom achievement badges based on the suspect's Git personality.
+- Dynamically generates custom meme images (via the stateless Memegen API) with personalized text including the user's username and top language.
+- Built with a hybrid fallback that automatically serves local, high-quality animated GIFs (`/memes/*.gif`) if the external API is unreachable.
+- Badge categories include *Commit Machine*, *README Warrior*, *Lone Wolf*, *Language Loyalist*, *Bug Hunter*, *The Ghost*, and *Open Source Philanthropist*.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 📸 Digital Arrest Warrants
+- Generates an **Official Indictment Warrant** modal featuring the suspect's profile avatar inside a glowing cyber-border, tech framing brackets, and official indictment charges.
+- Allows suspects to export and download their official warrant as a high-resolution PNG image directly from the browser canvas.
