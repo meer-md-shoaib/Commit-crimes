@@ -32,6 +32,42 @@ function timeSince(date: Date) {
   return "just now";
 }
 
+const parseGitHubInput = (input: string): { targetUser: string; targetRepo: string } => {
+  const trimmed = input.trim();
+  if (!trimmed) return { targetUser: "", targetRepo: "" };
+
+  // Check if it's a URL
+  if (trimmed.startsWith("http://") || trimmed.startsWith("https://") || trimmed.includes("github.com")) {
+    try {
+      let urlStr = trimmed;
+      if (!urlStr.startsWith("http://") && !urlStr.startsWith("https://")) {
+        urlStr = "https://" + urlStr;
+      }
+      const url = new URL(urlStr);
+      if (url.hostname.includes("github.com")) {
+        const parts = url.pathname.split("/").filter(Boolean);
+        if (parts.length >= 2) {
+          return { targetUser: parts[0], targetRepo: parts[1] };
+        } else if (parts.length === 1) {
+          return { targetUser: parts[0], targetRepo: "" };
+        }
+      }
+    } catch (e) {
+      console.warn("Failed to parse input as URL:", e);
+    }
+  }
+
+  // Fallback to simple split
+  const parts = trimmed.split("/").filter(Boolean);
+  if (parts.length >= 2) {
+    return { targetUser: parts[0], targetRepo: parts[1] };
+  } else if (parts.length === 1) {
+    return { targetUser: parts[0], targetRepo: "" };
+  }
+
+  return { targetUser: trimmed, targetRepo: "" };
+};
+
 const getBadgeIconName = (id: string) => {
   const map: Record<string, string> = {
     commit_machine: "badge_machine",
@@ -494,12 +530,8 @@ export default function Home({ initialUsername = "", initialRepo = "" }: HomePro
                 onChange={(e) => setUsername(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
-                    const parts = username.split("/");
-                    if (parts.length >= 2) {
-                      runInvestigation(parts[0], parts[1]);
-                    } else {
-                      runInvestigation(username);
-                    }
+                    const { targetUser, targetRepo } = parseGitHubInput(username);
+                    runInvestigation(targetUser, targetRepo);
                   }
                 }}
                 className="search-input"
@@ -507,16 +539,12 @@ export default function Home({ initialUsername = "", initialRepo = "" }: HomePro
                 autoCorrect="off"
                 autoCapitalize="off"
                 spellCheck="false"
-                maxLength={39}
+                maxLength={150}
               />
               <button
                 onClick={() => {
-                  const parts = username.split("/");
-                  if (parts.length >= 2) {
-                    runInvestigation(parts[0], parts[1]);
-                  } else {
-                    runInvestigation(username);
-                  }
+                  const { targetUser, targetRepo } = parseGitHubInput(username);
+                  runInvestigation(targetUser, targetRepo);
                 }}
                 className="analyze-btn flex items-center gap-1.5"
               >
