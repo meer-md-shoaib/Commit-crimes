@@ -31,3 +31,6 @@ This project transforms dry GitHub statistics into a gamified, humorous forensic
 ### 📸 Digital Arrest Warrants
 - Generates an **Official Indictment Warrant** modal featuring the suspect's profile avatar inside a glowing cyber-border, tech framing brackets, and official indictment charges.
 - Allows suspects to export and download their official warrant as a high-resolution PNG image directly from the browser canvas.
+
+### Created By: Meer Mohammed Shoaib 
+### Made Better By: Mohammed Maaz
